@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Action Typing Game</title>
+    <link rel="stylesheet" href="typing.css">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Noto+Sans+JP:wght@700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="game-container">
+        
+        <!-- アクションエリア（背景として常時表示） -->
+        <div class="action-area">
+            <div class="sky"></div>
+            <div class="ground"></div>
+            
+            <!-- 棒人間のプレイヤー -->
+            <div id="player" class="player stickman">
+                <div class="head"></div>
+                <div class="torso"></div>
+                <div class="arm-l"></div>
+                <div class="arm-r"></div>
+                <div class="leg-l"></div>
+                <div class="leg-r"></div>
+            </div>
+
+            <!-- コイン -->
+            <div id="coin" class="coin">🟡</div>
+
+            <!-- 紫色の波動（ビーム） -->
+            <div id="hadou" class="hadou"></div>
+
+            <!-- 障害物 -->
+            <div id="obstacle" class="obstacle"></div>
+            
+            <!-- 障害物の爆発エフェクト -->
+            <div id="explosion" class="explosion"></div>
+        </div>
+
+        <!-- スタート画面 -->
+        <div id="start-screen" class="screen overlay active">
+            <h1 class="title">ACTION TYPE</h1>
+            <p class="description">10秒以内にタイピングして波動で障害物を倒せ！<br>ミスすると残り時間が1秒減るぞ！</p>
+            <button id="start-btn" class="pixel-btn">START</button>
+        </div>
+
+        <!-- プレイ画面（UIのみ） -->
+        <div id="play-screen" class="screen ui-only">
+            <!-- HUD -->
+            <div class="hud">
+                <div class="lives-box">
+                    <span class="label">LIVES</span>
+                    <div id="lives-display" class="lives">❤️❤️❤️</div>
+                </div>
+                <div class="score-box">
+                    <span class="label">SCORE</span>
+                    <span id="current-score" class="value">000000</span>
+                </div>
+            </div>
+
+            <!-- 10秒タイマーのバー -->
+            <div class="timer-container">
+                <div id="time-bar" class="time-bar"></div>
+            </div>
+            
+            <!-- タイピングエリア -->
+            <div class="typing-area">
+                <div id="word-display" class="word-display">単語</div>
+                <div id="reading-display" class="reading-display">たんご</div>
+                <div id="romaji-display" class="romaji-display">
+                    <span class="typed"></span><span class="untyped">tango</span>
+                </div>
+                <div style="font-size: 0.6rem; color: #aaa; margin-top: 10px;">Press [ESC] to Pause</div>
+            </div>
+        </div>
+
+        <!-- ポーズ画面 -->
+        <div id="pause-screen" class="screen overlay">
+            <h2 class="result-title">PAUSED</h2>
+            <div class="menu-buttons">
+                <button id="resume-btn" class="pixel-btn">RESUME</button>
+                <button id="pause-retry-btn" class="pixel-btn">RETRY</button>
+                <button id="menu-btn" class="pixel-btn">MAIN MENU</button>
+            </div>
+        </div>
+
+        <!-- 結果画面 -->
+        <div id="result-screen" class="screen overlay">
+            <h2 class="result-title">GAME OVER</h2>
+            <div class="result-stats">
+                <div class="stat">
+                    <span class="stat-label">FINAL SCORE</span>
+                    <span id="final-score" class="stat-value">0</span>
+                </div>
+            </div>
+            <button id="retry-btn" class="pixel-btn">RETRY</button>
+        </div>
+
+    </div>
+    
+    <script src="words.js"></script>
+    <script src="typing.js"></script>
+</body>
+</html>

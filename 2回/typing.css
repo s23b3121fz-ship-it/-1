@@ -1,0 +1,418 @@
+:root {
+    --sky-color: #5c94fc;
+    --ground-top: #00a800;
+    --ground-bottom: #c84c0c;
+    --text-color: #ffffff;
+    --bg-color: #000000;
+    --panel-bg: rgba(0, 0, 0, 0.8);
+    --error: #ff0000;
+    --stickman-color: #000000;
+    --hadou-color: #a020f0; /* Purple */
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Press Start 2P', 'Noto Sans JP', monospace;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.game-container {
+    position: relative;
+    width: 100%;
+    max-width: 800px;
+    height: 600px;
+    background: var(--sky-color);
+    border: 4px solid #fff;
+    overflow: hidden;
+}
+
+/* Action Area is now the base background */
+.action-area {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+.ground {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 100px;
+    background: var(--ground-bottom);
+    border-top: 15px solid var(--ground-top);
+}
+
+/* Screens */
+.screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    display: none;
+    z-index: 10;
+}
+
+.screen.active {
+    display: flex;
+}
+
+.screen.ui-only {
+    background: transparent;
+    justify-content: flex-start;
+    pointer-events: none; /* Let clicks pass through if needed, though mostly keyboard driven */
+}
+
+.screen.overlay {
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 20;
+}
+
+/* UI Elements inside ui-only screen need pointer-events restored */
+.screen.ui-only > div {
+    pointer-events: auto;
+}
+
+.title {
+    font-size: 3rem;
+    color: #ffd700;
+    text-shadow: 4px 4px 0 #d94a38;
+    margin-bottom: 2rem;
+    text-align: center;
+    line-height: 1.5;
+}
+
+.description {
+    font-size: 1rem;
+    line-height: 2;
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.pixel-btn {
+    padding: 15px 30px;
+    font-size: 1.5rem;
+    font-family: inherit;
+    color: #fff;
+    background-color: #d94a38;
+    border: 4px solid #fff;
+    box-shadow: inset -4px -4px 0 rgba(0,0,0,0.3);
+    cursor: pointer;
+    transition: transform 0.1s;
+    margin-bottom: 15px;
+    pointer-events: auto;
+}
+
+.pixel-btn:active {
+    transform: scale(0.95);
+    box-shadow: inset 4px 4px 0 rgba(0,0,0,0.3);
+}
+
+.menu-buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.hud {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px 30px;
+    width: 100%;
+}
+
+.lives-box, .score-box {
+    display: flex;
+    flex-direction: column;
+}
+
+.label {
+    font-size: 0.8rem;
+    margin-bottom: 8px;
+    color: #ffd700;
+    text-shadow: 2px 2px 0 #000;
+}
+
+.lives {
+    font-size: 1.5rem;
+    letter-spacing: 5px;
+}
+
+.value {
+    font-size: 1.5rem;
+    text-shadow: 2px 2px 0 #000;
+}
+
+/* Timer Bar */
+.timer-container {
+    width: 90%;
+    height: 20px;
+    background: #000;
+    border: 4px solid #fff;
+    margin: 10px auto;
+    position: relative;
+}
+
+.time-bar {
+    width: 100%;
+    height: 100%;
+    background: #ffd700;
+    transform-origin: left;
+}
+
+/* Typing Area */
+.typing-area {
+    background: rgba(0, 0, 0, 0.7);
+    padding: 20px;
+    margin: 10px auto;
+    width: 90%;
+    border: 4px solid #fff;
+    text-align: center;
+}
+
+.word-display {
+    font-size: 2rem;
+    font-family: 'Noto Sans JP', sans-serif;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.reading-display {
+    font-size: 1rem;
+    font-family: 'Noto Sans JP', sans-serif;
+    margin-bottom: 20px;
+    color: #ccc;
+}
+
+.romaji-display {
+    font-size: 1.5rem;
+    font-family: 'Press Start 2P', monospace;
+    letter-spacing: 2px;
+}
+
+.typed {
+    color: #ffd700;
+}
+
+.untyped {
+    color: #888;
+}
+
+.untyped::first-letter {
+    color: #fff;
+    text-decoration: underline;
+}
+
+/* Stickman Player */
+.stickman {
+    position: absolute;
+    bottom: 100px;
+    left: 80px;
+    width: 40px;
+    height: 60px;
+    background: transparent;
+    border: none;
+    z-index: 2;
+}
+
+.stickman .head {
+    position: absolute;
+    top: 0;
+    left: 10px;
+    width: 20px;
+    height: 20px;
+    border: 3px solid var(--stickman-color);
+    border-radius: 50%;
+    background: #fff;
+}
+
+.stickman .torso {
+    position: absolute;
+    top: 20px;
+    left: 18px;
+    width: 4px;
+    height: 20px;
+    background: var(--stickman-color);
+}
+
+.stickman .arm-l, .stickman .arm-r {
+    position: absolute;
+    top: 22px;
+    width: 20px;
+    height: 4px;
+    background: var(--stickman-color);
+    transform-origin: left center;
+}
+
+.stickman .arm-l { left: 18px; transform: rotate(45deg); }
+.stickman .arm-r { left: 2px; transform: rotate(-45deg); }
+
+.stickman .leg-l, .stickman .leg-r {
+    position: absolute;
+    top: 38px;
+    width: 4px;
+    height: 20px;
+    background: var(--stickman-color);
+    transform-origin: top center;
+}
+
+.stickman .leg-l { left: 18px; transform: rotate(30deg); }
+.stickman .leg-r { left: 18px; transform: rotate(-30deg); }
+
+/* Run Anim */
+.stickman.run .leg-l { animation: run-l 0.3s infinite alternate; }
+.stickman.run .leg-r { animation: run-r 0.3s infinite alternate; }
+.stickman.run .arm-l { animation: run-al 0.3s infinite alternate; }
+.stickman.run .arm-r { animation: run-ar 0.3s infinite alternate; }
+
+@keyframes run-l { from { transform: rotate(30deg); } to { transform: rotate(-30deg); } }
+@keyframes run-r { from { transform: rotate(-30deg); } to { transform: rotate(30deg); } }
+@keyframes run-al { from { transform: rotate(45deg); } to { transform: rotate(-45deg); } }
+@keyframes run-ar { from { transform: rotate(-45deg); } to { transform: rotate(45deg); } }
+
+/* Attack Anim (Push arms forward) */
+.stickman.attack .arm-l { transform: rotate(0deg); }
+.stickman.attack .arm-r { transform: rotate(0deg); }
+
+.stickman.hit {
+    animation: blink 0.2s infinite;
+}
+
+@keyframes blink {
+    0% { opacity: 1; }
+    50% { opacity: 0.2; }
+    100% { opacity: 1; }
+}
+
+/* Coin */
+.coin {
+    position: absolute;
+    bottom: 160px;
+    left: 90px;
+    font-size: 1.5rem;
+    opacity: 0;
+    transform: translateY(0);
+    z-index: 5;
+    pointer-events: none;
+}
+.coin.show {
+    animation: coinPop 0.3s ease-out;
+}
+@keyframes coinPop {
+    0% { opacity: 1; transform: translateY(0) scale(1); }
+    50% { transform: translateY(-30px) scale(1.5); }
+    100% { opacity: 0; transform: translateY(-50px) scale(1); }
+}
+
+/* Obstacle */
+.obstacle {
+    position: absolute;
+    bottom: 100px;
+    right: -50px;
+    width: 40px;
+    height: 40px;
+    background-color: #d94a38;
+    border: 3px solid #000;
+    z-index: 2;
+}
+
+/* Hadou (Purple Wave) */
+.hadou {
+    position: absolute;
+    bottom: 105px;
+    left: 100px; /* Start near player */
+    width: 30px;
+    height: 30px;
+    background: radial-gradient(circle, #ff00ff 20%, var(--hadou-color) 80%);
+    border-radius: 50%;
+    box-shadow: 0 0 15px var(--hadou-color);
+    opacity: 0;
+    z-index: 3;
+    pointer-events: none;
+}
+
+.hadou.fire {
+    animation: shootHadou 0.3s linear forwards;
+}
+
+@keyframes shootHadou {
+    0% { opacity: 1; left: 100px; transform: scale(0.5); }
+    50% { opacity: 1; transform: scale(1.5); }
+    90% { opacity: 1; }
+    100% { opacity: 0; left: var(--target-x, 700px); transform: scale(1); }
+}
+
+/* Explosion */
+.explosion {
+    position: absolute;
+    bottom: 100px;
+    width: 50px;
+    height: 50px;
+    background: radial-gradient(circle, #ffff00 20%, #ff8c00 50%, transparent 80%);
+    opacity: 0;
+    z-index: 4;
+    pointer-events: none;
+    transform: scale(0);
+}
+
+.explosion.boom {
+    animation: boomAnim 0.3s ease-out;
+}
+
+@keyframes boomAnim {
+    0% { opacity: 1; transform: scale(0.5); }
+    50% { opacity: 1; transform: scale(1.5); }
+    100% { opacity: 0; transform: scale(2); }
+}
+
+/* Shaking */
+.error-shake {
+    animation: shake 0.2s;
+    color: var(--error);
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+/* Other */
+.result-title {
+    font-size: 4rem;
+    color: var(--error);
+    margin-bottom: 3rem;
+    text-shadow: 4px 4px 0 #fff;
+}
+
+.stat-label {
+    display: block;
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+    color: #ffd700;
+}
+
+.stat-value {
+    display: block;
+    font-size: 3rem;
+    margin-bottom: 40px;
+}
